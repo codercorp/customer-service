@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service
+  namespace: automotive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service
+  template:
+    metadata:
+      labels:
+        app: customer-service
+    spec:
+      containers:
+        - name: customer-service
+          image: erdigvijay/devops_repo:customer-service-latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://admin:admin123@mongo:27017/customerdb?authSource=admin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service
+  namespace: automotive
+spec:
+  selector:
+    app: customer-service
+  ports:
+    - port: 8082
+      targetPort: 8082
